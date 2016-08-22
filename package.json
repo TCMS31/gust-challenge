@@ -1,0 +1,49 @@
+{
+  "name": "javascript-challenge",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Gust developer/designer challenge: a linked-checkbox widget built on the k.js micro-framework",
+  "main": "javascript-challenge.js",
+  "license": "UNLICENSED",
+  "author": "Gust <devs@gust.com>",
+  "contributors": [
+    {
+      "name": "Kara Bernert",
+      "email": "kara@gust.com"
+    }
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "npm run build:js && npm run build:css",
+    "build:js": "browserify javascripts/main.js -o javascript-challenge.js -t [ babelify --presets [ @babel/preset-env ] ]",
+    "build:css": "sass --no-source-map styles/main.scss javascript-challenge.css",
+    "start": "npm run build && npm run serve",
+    "serve": "http-server . -p ${PORT:-8720} -c-1 --silent",
+    "watch": "nodemon -e js,scss -i javascript-challenge.js -i javascript-challenge.css -x 'npm run build'",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "@babel/core": "^7.20.12",
+    "@babel/preset-env": "^7.20.2",
+    "@eslint/js": "^9.39.5",
+    "@vitest/coverage-v8": "^2.1.9",
+    "babelify": "^10.0.0",
+    "browserify": "^17.0.0",
+    "eslint": "^9.39.5",
+    "globals": "^15.15.0",
+    "http-server": "^14.1.1",
+    "jsdom": "^25.0.1",
+    "nodemon": "^2.0.2",
+    "prettier": "^3.6.2",
+    "sass": "^1.93.2",
+    "vitest": "^2.1.9"
+  }
+}

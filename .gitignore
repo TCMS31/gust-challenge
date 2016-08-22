@@ -1,0 +1,7 @@
+node_modules/
+coverage/
+.DS_Store
+
+# Build output — regenerate with `npm run build`.
+javascript-challenge.js
+javascript-challenge.css
