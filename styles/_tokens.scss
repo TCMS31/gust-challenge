@@ -1,0 +1,28 @@
+// Design tokens shared by every partial. Import with `@use '../tokens' as *;`.
+$blue: #00b7bd;
+$lt-blue: #c3ebee;
+$yellow: #fef129;
+$red: #f04130;
+$ink: #222;
+$muted: #5b6b6d;
+$rule: #e2edee;
+
+$space-xs: 4px;
+$space-sm: 8px;
+$space-md: 16px;
+$space-lg: 32px;
+$space-xl: 48px;
+
+@mixin clearfix {
+  &::after {
+    visibility: hidden;
+    display: block;
+    content: '';
+    clear: both;
+  }
+}
+
+@mixin focus-ring {
+  outline: 2px solid $blue;
+  outline-offset: 2px;
+}

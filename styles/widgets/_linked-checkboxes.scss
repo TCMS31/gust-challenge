@@ -1,0 +1,50 @@
+@use '../tokens' as *;
+
+.checkbox-group {
+  border: 1px solid $rule;
+  border-radius: 6px;
+  margin: 0 0 $space-md;
+  padding: $space-sm $space-md $space-md;
+
+  legend {
+    color: $muted;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    padding: 0 $space-xs;
+    text-transform: uppercase;
+  }
+}
+
+.checkbox-control {
+  align-items: center;
+  display: flex;
+  gap: $space-sm;
+
+  label {
+    cursor: pointer;
+  }
+}
+
+.checkbox-control--controller {
+  border-bottom: 1px solid $rule;
+  margin-bottom: $space-sm;
+  padding-bottom: $space-sm;
+
+  label {
+    font-weight: 600;
+  }
+
+  // The controller advertises its state through data-status, which the widget
+  // keeps in step with the DOM `indeterminate` property.
+  [data-status='indeterminate'] + label::after {
+    content: ' — partial selection';
+    color: $muted;
+    font-weight: 400;
+  }
+}
+
+.linked-checkbox-container {
+  display: grid;
+  gap: $space-xs;
+  margin-left: $space-lg;
+}

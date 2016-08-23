@@ -1,0 +1,54 @@
+@use 'tokens' as *;
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  font-size: 15px;
+  color: $ink;
+  line-height: 1.7;
+  margin: 0 auto;
+  max-width: 880px;
+  padding: $space-xl $space-lg;
+}
+
+textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid $rule;
+  border-radius: 4px;
+  font: inherit;
+}
+
+label {
+  display: block;
+}
+
+input[type='checkbox'],
+input[type='radio'] {
+  accent-color: $blue;
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+.page-header {
+  border-bottom: 2px solid $blue;
+  margin-bottom: $space-xl;
+  padding-bottom: $space-md;
+
+  h1 {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0 0 $space-xs;
+  }
+
+  p {
+    color: $muted;
+    margin: 0;
+    max-width: 62ch;
+  }
+}
+
+.strong {
+  font-weight: bold;
+}

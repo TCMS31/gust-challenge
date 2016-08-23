@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Gust JavaScript Challenge &mdash; k.js widgets</title>
+    <link href="javascript-challenge.css" rel="stylesheet" title="Default Style" />
+    <script src="javascript-challenge.js" defer></script>
+  </head>
+
+  <body>
+    <header class="page-header">
+      <h1>k.js widget gallery</h1>
+      <p>
+        Four widgets mounted by the k.js micro-framework. The linked checkboxes are the challenge
+        submission; the other three shipped with the repo.
+      </p>
+    </header>
+
+    <section class="example">
+      <h2>Linked Checkboxes</h2>
+      <p class="example__note">
+        The controlling checkbox drives its group and reflects it back: checked, unchecked, or the
+        intermediary state when the selection is partial.
+      </p>
+
+      <div kjs-type="linkedCheckboxes">
+        <fieldset class="checkbox-group">
+          <legend>Fish to ship</legend>
+          <div class="checkbox-control checkbox-control--controller">
+            <input
+              type="checkbox"
+              kjs-role="controllerCheckbox"
+              kjs-checkbox-id="fish"
+              id="fish-controller"
+            />
+            <label for="fish-controller">Select all</label>
+          </div>
+          <div class="linked-checkbox-container">
+            <div class="checkbox-control">
+              <input
+                type="checkbox"
+                kjs-role="relatedCheckbox"
+                kjs-controller-id="fish"
+                id="fish-one"
+              />
+              <label for="fish-one">One fish</label>
+            </div>
+            <div class="checkbox-control">
+              <input
+                type="checkbox"
+                kjs-role="relatedCheckbox"
+                kjs-controller-id="fish"
+                id="fish-two"
+              />
+              <label for="fish-two">Two fish</label>
+            </div>
+            <div class="checkbox-control">
+              <input
+                type="checkbox"
+                kjs-role="relatedCheckbox"
+                kjs-controller-id="fish"
+                id="fish-red"
+              />
+              <label for="fish-red">Red fish</label>
+            </div>
+            <div class="checkbox-control">
+              <input
+                type="checkbox"
+                kjs-role="relatedCheckbox"
+                kjs-controller-id="fish"
+                id="fish-blue"
+              />
+              <label for="fish-blue">Blue fish</label>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="checkbox-group">
+          <legend>Second group, pre-checked in the markup</legend>
+          <div class="checkbox-control checkbox-control--controller">
+            <input
+              type="checkbox"
+              kjs-role="controllerCheckbox"
+              kjs-checkbox-id="seuss"
+              id="seuss-controller"
+            />
+            <label for="seuss-controller">Select all</label>
+          </div>
+          <div class="linked-checkbox-container">
+            <div class="checkbox-control">
+              <input
+                type="checkbox"
+                kjs-role="relatedCheckbox"
+                kjs-controller-id="seuss"
+                id="seuss-lorax"
+                checked
+              />
+              <label for="seuss-lorax">The Lorax</label>
+            </div>
+            <div class="checkbox-control">
+              <input
+                type="checkbox"
+                kjs-role="relatedCheckbox"
+                kjs-controller-id="seuss"
+                id="seuss-cat"
+                checked
+              />
+              <label for="seuss-cat">The Cat in the Hat</label>
+            </div>
+            <div class="checkbox-control">
+              <input
+                type="checkbox"
+                kjs-role="relatedCheckbox"
+                kjs-controller-id="seuss"
+                id="seuss-grinch"
+              />
+              <label for="seuss-grinch">The Grinch</label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+    </section>
+
+    <section class="example">
+      <h2>Self-extending Form</h2>
+      <form kjs-type="extendingForm">
+        <label
+          >Do you like green eggs and ham?
+          <select kjs-role="toggle">
+            <option value="" selected>Select One</option>
+            <option value="yes">I do not like them, Sam-I-Am.</option>
+            <option value="no">Say! I like green eggs and ham!</option>
+            <option value="idk">I am unsure.</option>
+          </select>
+        </label>
+        <div kjs-role="extension" kjs-trigger="yes">
+          <div>Try them, try them, and you may! Try them and you may I say!</div>
+          <label
+            ><input type="checkbox" name="try" />I decline the invitation to try said eggs and
+            ham.</label
+          >
+        </div>
+        <div kjs-role="extension" kjs-trigger="no">
+          <label>Check all that apply:</label>
+          <label><input type="radio" name="where" value="boat" />I would eat them in a boat.</label>
+          <label
+            ><input type="radio" name="where" value="goat" />I would eat them with a goat.</label
+          >
+          <label
+            ><input type="radio" name="where" value="herethere" />I would eat them here or
+            there.</label
+          >
+          <label
+            ><input type="radio" name="where" value="anywhere" />I would eat them anywhere.</label
+          >
+        </div>
+        <div kjs-role="extension" kjs-trigger="idk">
+          <label for="eggs-detail"
+            >Have you previously had the opportunity to try green eggs and ham? Please
+            explain.</label
+          >
+          <textarea
+            id="eggs-detail"
+            placeholder="Please provide details on any previous experience with green eggs and ham"
+          ></textarea>
+        </div>
+      </form>
+    </section>
+
+    <section class="example">
+      <h2>Tabs</h2>
+      <div kjs-type="tabs">
+        <ul class="tabs">
+          <li kjs-role="tab" kjs-id="1" class="active">One Fish</li>
+          <li kjs-role="tab" kjs-id="2">Two Fish</li>
+          <li kjs-role="tab" kjs-id="3">Red Fish</li>
+          <li kjs-role="tab" kjs-id="4">Blue Fish</li>
+        </ul>
+        <div kjs-role="content" kjs-tab-id="1" class="active">
+          <img src="images/one-fish.jpg" alt="One fish" />
+        </div>
+        <div kjs-role="content" kjs-tab-id="2">
+          <img src="images/two-fish.jpg" alt="Two fish" />
+        </div>
+        <div kjs-role="content" kjs-tab-id="3">
+          <img src="images/red-fish.jpg" alt="Red fish" />
+        </div>
+        <div kjs-role="content" kjs-tab-id="4">
+          <img src="images/blue-fish.jpg" alt="Blue fish" />
+        </div>
+      </div>
+    </section>
+
+    <section class="example">
+      <h2>Drawers</h2>
+      <div kjs-type="drawers">
+        <div kjs-role="handle" kjs-id="1">The Lorax</div>
+        <div kjs-role="drawer" kjs-handle-id="1">
+          Unless someone like you cares a whole awful lot, nothing is going to get better. It's not!
+        </div>
+        <div kjs-role="handle" kjs-id="2">The Cat in the Hat</div>
+        <div kjs-role="drawer" kjs-handle-id="2">There is no one alive who is youer than you.</div>
+        <div kjs-role="handle" kjs-id="3">The Grinch</div>
+        <div kjs-role="drawer" kjs-handle-id="3">
+          There's a light on this tree that won't light on one side.
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

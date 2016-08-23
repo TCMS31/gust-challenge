@@ -1,0 +1,26 @@
+@use '../tokens' as *;
+
+[kjs-role='drawer'] {
+  background-color: $blue;
+  color: white;
+
+  &:not(.open) {
+    height: 0;
+    overflow: hidden;
+  }
+
+  &.open {
+    padding: $space-sm 12px;
+  }
+}
+
+[kjs-role='handle'] {
+  border: 1px solid $blue;
+  padding: $space-sm 12px;
+  margin-top: 2px;
+
+  &:hover {
+    cursor: pointer;
+    background-color: rgba($blue, 0.08);
+  }
+}
