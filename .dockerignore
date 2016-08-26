@@ -1,0 +1,11 @@
+.git
+.github
+node_modules
+coverage
+docs
+tests
+images/*.psd
+javascript-challenge.js
+javascript-challenge.css
+*.log
+.DS_Store
