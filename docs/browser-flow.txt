@@ -1,0 +1,11 @@
+$ npm install --no-save playwright && npx playwright install chromium
+$ node docs/browser-flow.mjs
+
+ON LOAD                {"fish":{"state":"unchecked","status":"unchecked","aria":"fish-one fish-two fish-red fish-blue"},"seuss":{"state":"indeterminate","status":"indeterminate","aria":"seuss-lorax seuss-cat seuss-grinch"},"seussBoxes":[true,true,false]}
+click fish controller  {"fish":{"state":"checked","status":"checked","aria":"fish-one fish-two fish-red fish-blue"},"seuss":{"state":"indeterminate","status":"indeterminate","aria":"seuss-lorax seuss-cat seuss-grinch"},"seussBoxes":[true,true,false]}
+uncheck fish-red       {"fish":{"state":"indeterminate","status":"indeterminate","aria":"fish-one fish-two fish-red fish-blue"},"seuss":{"state":"indeterminate","status":"indeterminate","aria":"seuss-lorax seuss-cat seuss-grinch"},"seussBoxes":[true,true,false]}
+check seuss-grinch     {"fish":{"state":"indeterminate","status":"indeterminate","aria":"fish-one fish-two fish-red fish-blue"},"seuss":{"state":"checked","status":"checked","aria":"seuss-lorax seuss-cat seuss-grinch"},"seussBoxes":[true,true,true]}
+click fish controller  {"fish":{"state":"unchecked","status":"unchecked","aria":"fish-one fish-two fish-red fish-blue"},"seuss":{"state":"checked","status":"checked","aria":"seuss-lorax seuss-cat seuss-grinch"},"seussBoxes":[true,true,true]}
+click seuss controller {"fish":{"state":"unchecked","status":"unchecked","aria":"fish-one fish-two fish-red fish-blue"},"seuss":{"state":"unchecked","status":"unchecked","aria":"seuss-lorax seuss-cat seuss-grinch"},"seussBoxes":[false,false,false]}
+tabs + drawers         {"activeTab":"3","activeContent":"3","openDrawer":"2"}
+console errors         []

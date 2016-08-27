@@ -1,0 +1,31 @@
+$ npm test
+
+ RUN  v2.1.9 /Users/dev/Documents/Projects/WAMO/githubs/all_projects/gust-challenge
+
+ ✓ tests/linked-checkbox-state.test.js (14 tests) 3ms
+ ✓ tests/k.test.js (7 tests) 23ms
+ ✓ tests/widgets.test.js (12 tests) 28ms
+ ✓ tests/linked-checkboxes.test.js (15 tests) 31ms
+
+ Test Files  4 passed (4)
+      Tests  48 passed (48)
+   Start at  21:35:15
+   Duration  744ms (transform 78ms, setup 0ms, collect 141ms, tests 84ms, environment 1.72s, prepare 210ms)
+
+
+$ npm run test:coverage
+ % Coverage report from v8
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-------------------|---------|----------|---------|---------|-------------------
+All files          |    98.2 |       96 |     100 |    98.2 |                   
+ javascripts       |   96.47 |    94.11 |     100 |   96.47 |                   
+  k.js             |   96.47 |    94.11 |     100 |   96.47 | 31-33             
+ javascripts/lib   |     100 |      100 |     100 |     100 |                   
+  ...kbox-state.js |     100 |      100 |     100 |     100 |                   
+ ...cripts/widgets |   98.22 |    95.34 |     100 |   98.22 |                   
+  drawers.js       |     100 |      100 |     100 |     100 |                   
+  ...nding-form.js |     100 |      100 |     100 |     100 |                   
+  ...checkboxes.js |   96.74 |    91.66 |     100 |   96.74 | 45-46,62-63       
+  tabs.js          |     100 |      100 |     100 |     100 |                   
+-------------------|---------|----------|---------|---------|-------------------
