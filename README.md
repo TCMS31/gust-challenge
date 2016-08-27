@@ -1,340 +1,120 @@
-# Gust JavaScript Challenge — linked checkboxes
+# Gust JavaScript challenge — linked checkboxes
 
-## What it is
+A take-home. The repo arrived with `k.js` — a deliberately rough, dependency-free widget
+micro-framework — three example widgets (tabs, drawers, a self-extending form), and a brief
+asking for a fourth: one controlling checkbox that drives a group of related ones and reflects
+their combined state back as checked, unchecked, or an intermediary "some but not all", the way a
+Gmail inbox header checkbox behaves. Static page, no server, no network — SCSS compiles to one
+stylesheet, Browserify bundles one script, and `k.js` mounts every element carrying a `kjs-type`
+attribute once the DOM is ready.
 
-This is a take-home from Gust. The repo ships a deliberately rough, dependency-free
-widget micro-framework called **k.js**, three example widgets (tabs, drawers, a
-self-extending form), and a brief: build a fourth widget, _linked checkboxes_ — one
-controlling checkbox that drives a group of related ones and reflects their combined
-state back as checked, unchecked, or the intermediary "some but not all" state, the way
-a Gmail inbox header checkbox behaves.
-
-There is no server and no API. It is a static page: SCSS compiles to one stylesheet,
-Browserify bundles the widgets into one script, and `k.js` mounts every element carrying
-a `kjs-type` attribute when the DOM is ready.
-
-<details>
-<summary><strong>The original brief, verbatim</strong> (this is what the work is graded against)</summary>
-
-> We'd like you to use our simple, fake javascript framework to create a widget that
-> handles some linked checkboxes. You'll find examples of other widgets in this repo,
-> which you may use to guide you and to figure out how the framework functions.
->
-> **Requirements** — Create a 'linked checkbox' that allows a user to check or uncheck all
-> of the related checkboxes simultaneously.
->
-> - The controlling checkbox will have three states: a checked state, an unchecked state,
->   and an intermediary state.
-> - When controlling checkbox is **unchecked**:
->   - if the user clicks on a related checkbox, that checkbox becomes checked, and the
->     controlling checkbox remains unchecked.
->   - if the user clicks on the controlling checkbox, it becomes checked and related
->     checkboxes become checked.
-> - When the controlling checkbox is **checked**:
->   - if the user clicks on the controlling checkbox, it becomes unchecked, and all
->     related checkboxes become unchecked.
->   - if the user clicks on a related checkbox, that checkbox becomes unchecked, and the
->     controlling checkbox enters the intermediary state.
-> - When the controlling checkbox is in the **intermediary state**:
->   - if the user clicks on the controlling checkbox, it becomes unchecked, and all
->     related checkboxes become unchecked.
->   - if the user clicks on a checked related checkbox, the controlling checkbox remains in
->     the intermediary state unless there are no more checked related boxes, in which case
->     it returns to the unchecked state.
->   - if the user clicks on an unchecked related checkbox, the controlling checkbox remains
->     in the intermediary state unless there are no more unchecked related boxes, in which
->     case it returns to the checked state.
-> - for an example of this behavior, check out a gmail inbox
->
-> **What we're looking for:** We want to see the way you approach learning about a new
-> codebase, asking questions, solving problems, and communicating your intent. The
-> javascript framework is very rough, has poor cross-browser compatibility, and is
-> generally silly, but we don't want you to focus on those details, instead try to show us
-> how you tackle a new problem.
-
-</details>
-
-Every rule above has a named test in `tests/linked-checkbox-state.test.js` and a
-DOM-level counterpart in `tests/linked-checkboxes.test.js`.
-
-## Screenshots
-
-Captured with Playwright at 1440x900 against the page served locally, by the committed
-script `docs/browser-flow.mjs`.
-
-**The gallery on load.** The second group ships with two of three boxes checked in the
-markup, and the controller renders the intermediary state without any user interaction.
-
-![Widget gallery on load](docs/screenshots/01-widget-gallery.png)
-
-**After interaction.** One box cleared in the first group (intermediary); the last box
-checked in the second group (fully checked).
-
-![Linked checkboxes mid-interaction](docs/screenshots/02-linked-checkboxes.png)
-
-**The widgets that shipped with the repo**, still working after the refactor.
-
-![Tabs and drawers](docs/screenshots/03-tabs-and-drawers.png)
-
-### Captured output
-
-The same script prints the widget state after every click. Abridged below for width — the
-unedited output is in [`docs/browser-flow.txt`](docs/browser-flow.txt):
-
-```
-$ node docs/browser-flow.mjs
-
-ON LOAD                {"fish":{"state":"unchecked","status":"unchecked", ...}}
-click fish controller  {"fish":{"state":"checked","status":"checked", ...}}
-uncheck fish-red       {"fish":{"state":"indeterminate","status":"indeterminate", ...}}
-check seuss-grinch     {"seuss":{"state":"checked","status":"checked", ...}}
-click fish controller  {"fish":{"state":"unchecked","status":"unchecked", ...}}
-click seuss controller {"seuss":{"state":"unchecked", ...},"seussBoxes":[false,false,false]}
-tabs + drawers         {"activeTab":"3","activeContent":"3","openDrawer":"2"}
-console errors         []
-```
-
-Test output is in [`docs/test-output.txt`](docs/test-output.txt):
-
-```
- Test Files  4 passed (4)
-      Tests  48 passed (48)
-```
-
-## Architecture
+## The three states
 
 ```mermaid
-graph TD
-    HTML["javascript-challenge.html<br/>markup carrying kjs-type / kjs-role"]
-    MAIN["javascripts/main.js<br/>widget registry"]
-    KJS["javascripts/k.js<br/>micro-framework: scan, mount, isolate failures"]
+stateDiagram-v2
+    [*] --> unchecked: mount, nothing checked
+    [*] --> indeterminate: mount, some boxes checked
+    [*] --> checked: mount, every box checked
 
-    LC["widgets/linked-checkboxes.js<br/>DOM adapter"]
-    TABS["widgets/tabs.js"]
-    DRAWERS["widgets/drawers.js"]
-    FORM["widgets/extending-form.js"]
+    unchecked --> checked: click controller — checks the group
+    checked --> unchecked: click controller — clears the group
+    indeterminate --> unchecked: click controller — clears the group
 
-    STATE["lib/linked-checkbox-state.js<br/>pure state machine, zero DOM"]
-
-    SCSS["styles/*.scss"]
-    CSS["javascript-challenge.css"]
-    BUNDLE["javascript-challenge.js"]
-
-    HTML --> KJS
-    MAIN --> KJS
-    MAIN --> LC
-    MAIN --> TABS
-    MAIN --> DRAWERS
-    MAIN --> FORM
-    KJS --> LC
-    KJS --> TABS
-    KJS --> DRAWERS
-    KJS --> FORM
-    LC --> STATE
-    MAIN -.browserify.-> BUNDLE
-    SCSS -.dart-sass.-> CSS
-    BUNDLE --> HTML
-    CSS --> HTML
+    unchecked --> unchecked: check a box (literal brief)
+    checked --> indeterminate: uncheck a box
+    indeterminate --> indeterminate: boxes still mixed
+    indeterminate --> unchecked: last checked box cleared
+    indeterminate --> checked: last unchecked box checked
 ```
 
-Dependencies point inward: the adapter knows about the state machine, the state machine
-knows nothing about the DOM, and `k.js` knows nothing about any particular widget.
+## The brief argues with itself
 
-## Workflow
+It says an *unchecked* controller "remains unchecked" when the user checks a related box. It
+also says "for an example of this behavior, check out a gmail inbox" — and Gmail moves its
+header checkbox to the dash state as soon as one row is selected. Both cannot hold.
 
-The main flow — what happens on a click, and why the "before" state has to be remembered
-rather than read back off the element.
+The literal wording is the default, because that is what was written down. The Gmail reading is
+one attribute away — and the self-loop in the diagram above:
 
-```mermaid
-sequenceDiagram
-    participant U as User
-    participant B as Browser
-    participant W as linked-checkboxes.js
-    participant S as linked-checkbox-state.js
-
-    Note over W: on mount, setup() derives the<br/>controller state from the markup
-    W->>S: deriveControllerState([true, true, false])
-    S-->>W: "indeterminate"
-    W->>B: controller.indeterminate = true
-
-    U->>B: click the controlling checkbox
-    B->>B: activation: checked = !checked, indeterminate = false
-    B->>W: click event
-    W->>S: nextCheckedAfterControllerToggle(rememberedState)
-    S-->>W: true / false
-    W->>B: set every related checkbox
-    W->>B: write controller state + data-status
-
-    U->>B: click a related checkbox
-    B->>W: click event
-    W->>S: nextStateAfterRelatedToggle(rememberedState, relatedBooleans)
-    S-->>W: "checked" | "unchecked" | "indeterminate"
-    W->>B: write controller state + data-status
+```html
+<div kjs-type="linkedCheckboxes" kjs-partial-from-unchecked>
 ```
 
-## Quickstart
+The one decision a reviewer might disagree with is a flag rather than a rewrite, and both
+behaviours have tests.
+
+## Run it
 
 ```bash
 npm install
-npm start          # builds, then serves on http://127.0.0.1:8720
+npm start                 # build, then serve on http://127.0.0.1:8720
+npm test                  # vitest / jsdom — 48 tests, 98.2% statements
+npm run watch             # rebuild on change
+npm run lint              # eslint flat config; npm run format for prettier
 ```
 
-Then open <http://127.0.0.1:8720/javascript-challenge.html>.
+Then open <http://127.0.0.1:8720/javascript-challenge.html>. Build output
+(`javascript-challenge.js`, `javascript-challenge.css`) is generated, not committed. `PORT`
+overrides the serve port, `BASE_URL` retargets `docs/browser-flow.mjs`. A `Dockerfile` and
+`docker-compose.yml` are here (`HOST_PORT`, default 8720, maps to nginx on 8080) but Docker was
+unavailable in this environment, so neither has ever been built or run.
 
-`npm start` is `npm run build && npm run serve`. The build output
-(`javascript-challenge.js`, `javascript-challenge.css`) is generated, not committed.
+## What it looks like
 
-With Docker:
+Captured at 1440x900 by `docs/browser-flow.mjs` (Playwright, deliberately not a dependency — a
+documentation tool, not part of the suite). Its literal transcript is in
+[`docs/browser-flow.txt`](docs/browser-flow.txt), test output in
+[`docs/test-output.txt`](docs/test-output.txt).
 
-```bash
-docker compose up --build   # http://127.0.0.1:8720
-```
+The second group ships two of its three boxes checked in the markup, and the controller renders
+the intermediary state with no user interaction:
 
-## Configuration
+![Widget gallery on load](docs/screenshots/01-widget-gallery.png)
 
-The page has no runtime configuration — it is static. These variables affect the local
-tooling only.
+![Mid-interaction: one box cleared in the first group, the last box checked in the second](docs/screenshots/02-linked-checkboxes.png)
 
-| Name        | Required | Default                 | Purpose                                                     |
-| ----------- | -------- | ----------------------- | ----------------------------------------------------------- |
-| `PORT`      | no       | `8720`                  | Port for `npm run serve` (the local static server).         |
-| `HOST_PORT` | no       | `8720`                  | Host port published by `docker compose`; container is 8080. |
-| `BASE_URL`  | no       | `http://127.0.0.1:8720` | Target for `docs/browser-flow.mjs`.                         |
+![Tabs and drawers — the widgets that shipped with the repo, still working afterwards](docs/screenshots/03-tabs-and-drawers.png)
 
-## Development
+## Four things that were actually broken
 
-```bash
-npm run build          # bundle JS (browserify + babel) and compile SCSS (dart-sass)
-npm run watch          # rebuild on change
-npm run serve          # static server on $PORT (default 8720)
+- **No `setup()`.** The widget was only wired for events, so pre-checked markup left the
+  controller reporting unchecked until something was clicked. `k.js` already had a `setup` hook;
+  the widget uses it and derives its initial state from the boxes.
+- **An unknown `kjs-type` unmounted the rest of the page.** `kjs()` called
+  `constructors[name](el)` unchecked, so one typo threw out of the `forEach` and every *later*
+  widget died with it. It now skips the bad element, logs, and returns what mounted — a
+  correctness bug, not the polish the brief told me to skip.
+- **`tabs.js` assumed an active tab existed**, dereferencing the result of
+  `querySelector('.active[kjs-role=tab]')`. Combined with the above, one tab list without an
+  `.active` class was page-fatal. It falls back to the first tab.
+- **The CSS build did not run.** `node-sass@8` ships no binding for Node 22 on arm64, so
+  `build:css` failed outright. Migrated to dart-sass, and the SCSS from deprecated `@import` to
+  `@use`. No other dependency changed major version.
 
-npm test               # vitest, jsdom environment
-npm run test:watch
-npm run test:coverage
+## Where the rules live
 
-npm run lint           # eslint (flat config)
-npm run format         # prettier --write
-npm run format:check
-```
+`javascripts/lib/linked-checkbox-state.js` holds every transition as a pure function over
+booleans and a state string — no DOM, no events. `javascripts/widgets/linked-checkboxes.js` is
+only the adapter: read the boxes, call those functions, write `checked`, `indeterminate` and a
+`data-status` mirror back. 14 of the 48 tests never touch an element. Two details worth knowing:
 
-Regenerating the screenshots and the captured transcript (Playwright is intentionally not
-a dependency — it is a documentation tool, not part of the suite):
+- **The previous state is remembered, not re-read.** The browser applies its own activation
+  behaviour before the handler runs — clicking an indeterminate checkbox clears `indeterminate`
+  and sets `checked` — so by then the element cannot tell you what the user clicked *on*. The
+  authoritative "before" value is held per group in a closure.
+- **Groups are indexed once at mount.** The original handlers ran
+  `widget.querySelectorAll('[kjs-controller-id=…]')` on every click. Mounting now builds an
+  element→group `WeakMap`, so a click costs the size of its own group rather than a subtree
+  scan, and detached nodes are not pinned.
 
-```bash
-npm run build && npm run serve &
-npm install --no-save playwright && npx playwright install chromium
-node docs/browser-flow.mjs > docs/browser-flow.txt
-```
+## What I left alone
 
-## Project structure
-
-```
-javascripts/
-  k.js                          the micro-framework: find [kjs-type], mount, wire listeners
-  main.js                       the widget registry and the DOMContentLoaded entry point
-  lib/
-    linked-checkbox-state.js    pure state machine — every rule from the brief, no DOM
-  widgets/
-    linked-checkboxes.js        DOM adapter for the challenge widget
-    tabs.js  drawers.js  extending-form.js
-styles/
-  _tokens.scss                  colours, spacing, mixins
-  _base.scss  _example.scss
-  main.scss                     entry point compiled to javascript-challenge.css
-  widgets/                      one partial per widget
-tests/
-  linked-checkbox-state.test.js state machine, rule by rule
-  linked-checkboxes.test.js     the widget driven through a real jsdom DOM
-  k.test.js                     framework: mounting, ordering, failure isolation
-  widgets.test.js               the three pre-existing widgets
-  helpers/dom.js                markup builders and a state snapshot helper
-docs/
-  browser-flow.mjs              Playwright script that produces the screenshots below
-  browser-flow.txt              its literal output
-  test-output.txt               literal output of npm test and npm run test:coverage
-  screenshots/
-javascript-challenge.html       the demo page
-```
-
-## Design notes
-
-**The state machine is separated from the DOM.** The original widget expressed the rules
-as nested `if` statements inside two event handlers, reading and writing `checked`,
-`indeterminate` and a `data-status` attribute as it went. That is hard to read and
-impossible to test without a browser. The rules now live in
-`lib/linked-checkbox-state.js` as three pure functions over booleans and a state string;
-`widgets/linked-checkboxes.js` does nothing but read the DOM, call them, and write the
-result back. Fourteen of the forty-eight tests never touch an element.
-
-**The DOM is the source of truth, not a duplicated attribute.** The original stored the
-controller's state in `data-status` _and_ in `checked`/`indeterminate`, and the two could
-drift — the related-checkbox handler updated `data-status` in some branches and not
-others. Now the widget keeps one in-memory state per group, seeded from the markup on
-mount, and `data-status` is a write-only mirror that CSS and tests can read.
-
-**Why the previous state is remembered rather than re-read.** A browser applies its own
-activation behaviour _before_ the click handler runs: clicking an indeterminate checkbox
-sets `indeterminate = false` and flips `checked` to `true`. By the time the handler fires,
-the element can no longer tell you what state the user clicked _on_. The original code
-worked around this by consulting `data-status`; this version keeps the authoritative value
-in the closure, which removes the possibility of the attribute and the element disagreeing.
-
-**One genuine ambiguity in the brief, made explicit.** The brief says an _unchecked_
-controller "remains unchecked" when the user checks a related box — but it also points at
-Gmail, which moves its header checkbox to the dash state as soon as one row is selected.
-Both cannot hold. The literal wording is the default because it is what was written down;
-the Gmail reading is one attribute away:
-
-```html
-<div kjs-type="linkedCheckboxes" kjs-partial-from-unchecked></div>
-```
-
-That is the extensibility seam — the one decision a reviewer might disagree with is a flag
-rather than a rewrite. Both behaviours are covered by tests.
-
-**Failure isolation in `k.js`.** The framework's public API is unchanged — it is the
-client's code and the brief explicitly says not to polish it. One behaviour did change,
-because it is a correctness bug rather than a style preference: `kjs()` used to call
-`constructors[widgetName](el)` without checking, so a typo in a `kjs-type` attribute threw
-a `TypeError` out of the `forEach` and left every _later_ widget on the page unmounted. It
-now skips the bad widget, logs to `console.error`, and returns the list of what mounted.
-
-**Scalability, honestly.** There is no database, no network call and no server here, so
-the usual bottlenecks do not exist. The one that does is per-click work: the original
-handlers ran `widget.querySelectorAll('[kjs-controller-id=...]')` on _every_ click, so a
-group of _n_ boxes cost a full subtree scan per interaction. The widget now resolves its
-groups once at mount and keeps an element→group `WeakMap`, making each click O(k) in the
-size of the group it touches rather than O(n) in the size of the document subtree. For a
-four-box demo this is unmeasurable; for a Gmail-sized list of a thousand rows it is the
-difference that matters, and it costs nothing to do it correctly. The `WeakMap` also means
-the index does not keep detached nodes alive.
-
-**Build toolchain.** `node-sass` was replaced with `sass` (dart-sass). This was not a
-preference: `node-sass@8` ships prebuilt native bindings only up to Node 18, so
-`npm run build:scss` failed outright on a current Node with _"Node Sass does not yet
-support your current environment"_. The SCSS was migrated from the deprecated `@import`
-to `@use`, with shared values in `_tokens.scss`. No other dependency changed major version.
-
-## Limitations
-
-- **The three pre-existing widgets were only repaired, not redesigned.** The brief says not
-  to focus on the framework, so `tabs`, `drawers` and `extending-form` keep their original
-  shape and markup contract; they gained null guards, `currentTarget` instead of `target`,
-  and tests.
-- **Tabs are not keyboard accessible.** They are `<li>` elements with click handlers, as
-  they shipped. Making them a real ARIA tablist would change the framework's markup
-  contract, which is out of scope for this brief.
-- **No end-to-end test in CI.** `docs/browser-flow.mjs` is run by hand to regenerate the
-  screenshots; the automated suite is jsdom-only. jsdom implements the checkbox activation
-  behaviour this widget depends on, and the transcript above confirms the same behaviour in
-  Chromium, but the two are not run together.
-- **The Docker image is unbuilt.** The Dockerfile and compose file were authored and
-  `docker compose config` parses them, but the daemon was not available in this
-  environment, so neither the build nor the `read_only` runtime has been executed.
-- **No AI features and no new product features were added.** This is an assessment. The
-  reviewer is grading a checkbox widget against a written brief; bolting extras onto it
-  would read as scope creep. Everything above is architecture, correctness, tests and
-  documentation.
-- **Browser support is whatever Browserify + `@babel/preset-env` produce** with no
-  explicit browserslist target, and the widget relies on `WeakMap`, `Map` and the native
-  `indeterminate` property. No IE.
+- **The three original widgets were repaired, not redesigned.** The brief says not to focus on
+  the framework, so their markup contract is unchanged; they gained null guards, `currentTarget`
+  instead of `target`, and tests. `k.js`'s public API is likewise untouched.
+- **Tabs are still not keyboard accessible** — `<li>` elements with click handlers, as they
+  shipped. A real ARIA tablist would change the framework's markup contract.
+- **No browser test in CI.** The suite is jsdom-only and `docs/browser-flow.mjs` is run by hand.
+  jsdom does implement the activation behaviour this widget leans on, and the transcript confirms
+  the same in Chromium, but the two never run together.
+- **No extra features.** Everything above is correctness, tests and documentation.
